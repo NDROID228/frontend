@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+
+  min-height: 100vh;
+  padding: 90px 20px 0;
+  font-family: Verdana, sans-serif;
+}
