@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const { tg } = useTelegram();
+  const { tg, onClose, user } = useTelegram();
   const [image, setImage] = useState("default");
   const [inputMsg, setInputMsg] = useState("");
 
@@ -13,6 +13,7 @@ function App() {
       text: "Задати питання",
     });
     tg.MainButton.hide();
+    console.log("user", user);
   }, []);
 
   useEffect(() => {
@@ -34,8 +35,14 @@ function App() {
           body: formData
         })
         .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
+        .then(data => {
+          if (data.ok) {
+            onClose()
+          } else {
+            setInputMsg(data.message)
+          }
+        })
+        .catch(error => setInputMsg('Щось пішло не так... Спробуйте ще.'));
   
         return;
       };
@@ -54,6 +61,7 @@ function App() {
 
   return (
     <section>
+      <p>Привіт, {user}</p>
       <h1>Запитайте у ChatGPT</h1>
       <p>що зображено на картинці?</p>
       <label htmlFor="file-upload" className="custom-file-upload">
