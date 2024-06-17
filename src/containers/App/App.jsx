@@ -2,12 +2,12 @@ import "./App.css";
 import { useTelegram } from "../../hooks/useTelegram";
 import { useEffect, useLayoutEffect, useState } from "react";
 
-const serverUrl = "https://tg-bot-task-backend.onrender.com/"
-
 function App() {
+  const serverUrl = "https://tg-bot-task-backend.onrender.com/";
   const { tg, onClose, user } = useTelegram();
   const [image, setImage] = useState("default");
   const [inputMsg, setInputMsg] = useState("");
+  const [logs, setLogs] = useState("");
 
   useLayoutEffect(() => {
     tg.MainButton.setParams({
@@ -27,30 +27,27 @@ function App() {
       setInputMsg(image.name);
       tg.MainButton.onClick = async () => {
         const formData = new FormData();
-        console.log(image);
         formData.append("image", image);
-  
-        
+
         await fetch(`${serverUrl}upload`, {
-          method: 'POST',
-          body: formData
+          method: "POST",
+          body: formData,
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.ok) {
-            onClose()
-          } else {
-            setInputMsg(data.message)
-          }
-        })
-        .catch(error => setInputMsg('Щось пішло не так... Спробуйте ще.'));
-  
+          .then((response) => response.json())
+          .then((data) => {
+            setLogs(JSON.stringify(data))
+            if (data.ok) {
+              onClose();
+            } else {
+              setInputMsg(data.message);
+            }
+          })
+          .catch((error) => setInputMsg("Щось пішло не так... Спробуйте ще."));
+
         return;
       };
       tg.MainButton.show();
     }
-
-    console.log(image);
   }, [image]);
 
   const getImage = (e) => {
@@ -62,7 +59,7 @@ function App() {
 
   return (
     <section>
-      <p>Привіт, {user?.username }</p>
+      <p>Привіт, {user?.username || "користувачу"}!</p>
       <h1>Запитайте у ChatGPT</h1>
       <p>що зображено на картинці?</p>
       <label htmlFor="file-upload" className="custom-file-upload">
@@ -75,6 +72,7 @@ function App() {
         onChange={getImage}
       />
       <span>{inputMsg}</span>
+      <code style={{ marginTop: "10px" }}>{logs}</code>
     </section>
   );
 }
