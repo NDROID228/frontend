@@ -1,6 +1,6 @@
 import "./App.css";
 import { useTelegram } from "../../hooks/useTelegram";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
 function App() {
   const serverUrl = "https://tg-bot-task-backend.onrender.com/";
@@ -17,6 +17,47 @@ function App() {
     console.log("user", user);
   }, []);
 
+  const onMainBtnClick = useCallback(async () => {
+    setLogs(logs + "button pressed\n");
+
+    const formData = new FormData();
+    formData.append("image", image);
+    let message = "";
+    await fetch(`${serverUrl}upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        setLogs("fetch worked\n");
+        return response.json();
+      })
+      .then((data) => {
+        setLogs(logs + "data parsed\n");
+        setLogs(logs + JSON.stringify(data));
+        if (data.ok) {
+          tg.sendData(JSON.stringify(data))
+          return;
+        } else {
+          setInputMsg(data.message);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLogs(logs + "error caught\n");
+        setInputMsg("Щось пішло не так... Спробуйте ще.");
+        return;
+      });
+
+    return;
+  }, []);
+
+  useEffect(() => {
+    tg.onEvent("mainButtonClicked", onMainBtnClick);
+    return () => {
+      tg.offEvent("mainButtonClicked", onMainBtnClick);
+    };
+  }, [onMainBtnClick]);
+
   useEffect(() => {
     if (image === "default") {
       setInputMsg("Тільки формати png та jpeg");
@@ -25,37 +66,6 @@ function App() {
       return;
     } else {
       setInputMsg(image.name);
-
-      tg.MainButton.onClick = async () => {
-        setLogs("button pressed\n");
-
-        const formData = new FormData();
-        formData.append("image", image);
-
-        await fetch(`${serverUrl}upload`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            setLogs("fetch worked\n");
-            response.json();
-          })
-          .then((data) => {
-            setLogs("data parsed\n");
-            setLogs(JSON.stringify(data));
-            if (data.ok) {
-              onClose();
-            } else {
-              setInputMsg(data.message);
-            }
-          })
-          .catch((error) => {
-            setLogs("error caught\n");
-            setInputMsg("Щось пішло не так... Спробуйте ще.");
-          });
-
-        return;
-      };
       tg.MainButton.show();
     }
   }, [image]);
@@ -82,7 +92,10 @@ function App() {
         onChange={getImage}
       />
       <span>{inputMsg}</span>
-      <code style={{ marginTop: "10px" }}>{logs}</code>
+      <code style={{ marginTop: "10px" }}>
+        there will be logs
+        {logs}
+      </code>
     </section>
   );
 }
