@@ -25,7 +25,10 @@ function App() {
       return;
     } else {
       setInputMsg(image.name);
+
       tg.MainButton.onClick = async () => {
+        setLogs("button pressed\n");
+
         const formData = new FormData();
         formData.append("image", image);
 
@@ -33,16 +36,23 @@ function App() {
           method: "POST",
           body: formData,
         })
-          .then((response) => response.json())
+          .then((response) => {
+            setLogs("fetch worked\n");
+            response.json();
+          })
           .then((data) => {
-            setLogs(JSON.stringify(data))
+            setLogs("data parsed\n");
+            setLogs(JSON.stringify(data));
             if (data.ok) {
               onClose();
             } else {
               setInputMsg(data.message);
             }
           })
-          .catch((error) => setInputMsg("Щось пішло не так... Спробуйте ще."));
+          .catch((error) => {
+            setLogs("error caught\n");
+            setInputMsg("Щось пішло не так... Спробуйте ще.");
+          });
 
         return;
       };
