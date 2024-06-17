@@ -1,7 +1,8 @@
 import "./App.css";
 import { useTelegram } from "../../hooks/useTelegram";
 import { useEffect, useLayoutEffect, useState } from "react";
-import axios from "axios";
+
+const serverUrl = "https://tg-bot-task-backend.onrender.com/"
 
 function App() {
   const { tg, onClose, user } = useTelegram();
@@ -30,7 +31,7 @@ function App() {
         formData.append("image", image);
   
         
-        await fetch("http://localhost:5000/upload", {
+        await fetch(`${serverUrl}upload`, {
           method: 'POST',
           body: formData
         })
