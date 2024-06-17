@@ -66,6 +66,37 @@ function App() {
       return;
     } else {
       setInputMsg(image.name);
+
+      tg.MainButton.onClick = async () => {
+        setLogs("button pressed\n");
+
+        const formData = new FormData();
+        formData.append("image", image);
+
+        await fetch(`${serverUrl}upload`, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => {
+            setLogs("fetch worked\n");
+            response.json();
+          })
+          .then((data) => {
+            setLogs("data parsed\n");
+            setLogs(JSON.stringify(data));
+            if (data.ok) {
+              onClose();
+            } else {
+              setInputMsg(data.message);
+            }
+          })
+          .catch((error) => {
+            setLogs("error caught\n");
+            setInputMsg("Щось пішло не так... Спробуйте ще.");
+          });
+
+        return;
+      };
       tg.MainButton.show();
     }
   }, [image]);
