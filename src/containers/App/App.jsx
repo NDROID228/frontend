@@ -61,7 +61,7 @@ function App() {
 
   return (
     <section>
-      <p>Привіт, {user.username}</p>
+      <p>Привіт, {user?.username }</p>
       <h1>Запитайте у ChatGPT</h1>
       <p>що зображено на картинці?</p>
       <label htmlFor="file-upload" className="custom-file-upload">
