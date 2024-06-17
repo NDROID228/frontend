@@ -27,7 +27,7 @@ function App() {
       setInputMsg(image.name);
 
       tg.MainButton.onClick = async () => {
-        setLogs("button pressed\n");
+        setLogs(logs+"button pressed\n");
 
         const formData = new FormData();
         formData.append("image", image);
@@ -41,8 +41,8 @@ function App() {
             response.json();
           })
           .then((data) => {
-            setLogs("data parsed\n");
-            setLogs(JSON.stringify(data));
+            setLogs(logs+"data parsed\n");
+            setLogs(logs+JSON.stringify(data));
             if (data.ok) {
               onClose();
             } else {
@@ -50,7 +50,7 @@ function App() {
             }
           })
           .catch((error) => {
-            setLogs("error caught\n");
+            setLogs(logs+"error caught\n");
             setInputMsg("Щось пішло не так... Спробуйте ще.");
           });
 
@@ -82,7 +82,10 @@ function App() {
         onChange={getImage}
       />
       <span>{inputMsg}</span>
-      <code style={{ marginTop: "10px" }}>{logs}</code>
+      <code style={{ marginTop: "10px" }}>
+        there will be logs
+        {logs}
+      </code>
     </section>
   );
 }
