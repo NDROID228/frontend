@@ -14,6 +14,21 @@ function App() {
       text: "Задати питання",
     });
     tg.MainButton.hide();
+    window.sendData = async () => {
+      const formData = new FormData();
+      formData.append("image", image);
+      await fetch(`${serverUrl}upload`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data; boundary=jbasdjbfj"
+        }
+      }).then((response) => {
+        setLogs(logs + "fetch worked<br>");
+        console.log(response.json());
+        return;
+      }).catch(e => console.log(e));
+    };
     console.log("user", user);
   }, []);
 
@@ -43,7 +58,7 @@ function App() {
         }
       })
       .catch((error) => {
-        setLogs(logs + "error caught<br>");
+        setLogs(logs + "error caught " + error);
         setInputMsg("Щось пішло не так... Спробуйте ще.");
         return;
       });
@@ -61,8 +76,10 @@ function App() {
   useEffect(() => {
     if (image === "default") {
       setInputMsg("Тільки формати png та jpeg");
+      tg.MainButton.hide();
     } else if (!image) {
       setInputMsg("Помилка при завантаженні файлу :(");
+      tg.MainButton.hide();
       return;
     } else {
       setInputMsg(image.name);
@@ -124,7 +141,8 @@ function App() {
       />
       <span>{inputMsg}</span>
       <div style={{ marginTop: "10px" }}>
-        there will be logs<br/>
+        there will be logs
+        <br />
         {logs}
       </div>
     </section>
