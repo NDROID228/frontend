@@ -77,44 +77,15 @@ function App() {
     if (image === "default") {
       setInputMsg("Тільки формати png та jpeg");
       tg.MainButton.hide();
+      return;
     } else if (!image) {
       setInputMsg("Помилка при завантаженні файлу :(");
       tg.MainButton.hide();
       return;
     } else {
       setInputMsg(image.name);
-
-      // tg.MainButton.onClick = async () => {
-      //   setLogs(logs + "button pressed<br>");
-
-      //   const formData = new FormData();
-      //   formData.append("image", image);
-
-      //   await fetch(`${serverUrl}upload`, {
-      //     method: "POST",
-      //     body: formData,
-      //   })
-      //     .then((response) => {
-      //       setLogs(logs + "fetch worked<br>");
-      //       response.json();
-      //     })
-      //     .then((data) => {
-      //       setLogs(logs + "data parsed<br>");
-      //       setLogs(JSON.stringify(data));
-      //       if (data.ok) {
-      //         onClose();
-      //       } else {
-      //         setInputMsg(data.message);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       setLogs(logs + "error caught<br>");
-      //       setInputMsg("Щось пішло не так... Спробуйте ще.");
-      //     });
-
-      //   return;
-      // };
       tg.MainButton.show();
+      return;
     }
   }, [image]);
 
