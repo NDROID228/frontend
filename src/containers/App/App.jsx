@@ -64,7 +64,7 @@ function App() {
       });
 
     return;
-  }, []);
+  }, [image]);
 
   useEffect(() => {
     tg.onEvent("mainButtonClicked", onMainBtnClick);
@@ -84,36 +84,36 @@ function App() {
     } else {
       setInputMsg(image.name);
 
-      tg.MainButton.onClick = async () => {
-        setLogs(logs + "button pressed<br>");
+      // tg.MainButton.onClick = async () => {
+      //   setLogs(logs + "button pressed<br>");
 
-        const formData = new FormData();
-        formData.append("image", image);
+      //   const formData = new FormData();
+      //   formData.append("image", image);
 
-        await fetch(`${serverUrl}upload`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            setLogs(logs + "fetch worked<br>");
-            response.json();
-          })
-          .then((data) => {
-            setLogs(logs + "data parsed<br>");
-            setLogs(JSON.stringify(data));
-            if (data.ok) {
-              onClose();
-            } else {
-              setInputMsg(data.message);
-            }
-          })
-          .catch((error) => {
-            setLogs(logs + "error caught<br>");
-            setInputMsg("Щось пішло не так... Спробуйте ще.");
-          });
+      //   await fetch(`${serverUrl}upload`, {
+      //     method: "POST",
+      //     body: formData,
+      //   })
+      //     .then((response) => {
+      //       setLogs(logs + "fetch worked<br>");
+      //       response.json();
+      //     })
+      //     .then((data) => {
+      //       setLogs(logs + "data parsed<br>");
+      //       setLogs(JSON.stringify(data));
+      //       if (data.ok) {
+      //         onClose();
+      //       } else {
+      //         setInputMsg(data.message);
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       setLogs(logs + "error caught<br>");
+      //       setInputMsg("Щось пішло не так... Спробуйте ще.");
+      //     });
 
-        return;
-      };
+      //   return;
+      // };
       tg.MainButton.show();
     }
   }, [image]);
