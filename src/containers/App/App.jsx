@@ -20,7 +20,8 @@ function App() {
     setLogs(logs + "button pressed<br>");
     const reader = new FileReader();
     reader.readAsDataURL(imageFile);
-    reader.onload = async () => {
+    reader.onloadend = async () => {
+      console.log('fetching loaded data:', reader.result);
       await fetch(`${serverUrl}upload`, {
         method: "POST",
         body: reader.result,
