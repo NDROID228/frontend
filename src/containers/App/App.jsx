@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
 function App() {
   const serverUrl = "https://tg-bot-task-backend.onrender.com/";
-  const { tg, onClose, user } = useTelegram();
+  const { tg, onClose, user, queryId } = useTelegram();
   const [image, setImage] = useState("default");
   const [inputMsg, setInputMsg] = useState("");
   const [logs, setLogs] = useState("");
@@ -37,6 +37,7 @@ function App() {
 
     const formData = new FormData();
     formData.append("image", image);
+    formData.append("queryId", queryId)
     let message = "";
     await fetch(`${serverUrl}upload`, {
       method: "POST",
@@ -50,7 +51,7 @@ function App() {
         setLogs(logs + "data parsed<br>");
         setLogs(logs + JSON.stringify(data) + "<br>");
         if (data.ok) {
-          tg.sendData(JSON.stringify(data));
+          onClose()
           return;
         } else {
           setInputMsg(data.message);
