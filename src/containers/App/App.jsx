@@ -17,22 +17,22 @@ function App() {
   }, []);
 
   const onMainBtnClick = useCallback(async () => {
-    setLogs(logs + "button pressed<br>");
+    setLogs(logs + "button pressed\n");
     const reader = new FileReader();
     reader.readAsDataURL(imageFile);
-    reader.onloadend = async () => {
-      console.log('fetching loaded data:', reader.result);
-      await fetch(`${serverUrl}upload`, {
+    reader.onloadend = () => {
+      setLogs(logs + '\nfetching loaded data:\n' + reader.result);
+      fetch(`${serverUrl}upload`, {
         method: "POST",
         body: reader.result,
       })
         .then((response) => {
-          setLogs(logs + "fetch worked<br>");
+          setLogs(logs + "fetch worked\n");
           return response.json();
         })
         .then((data) => {
-          setLogs(logs + "data parsed<br>");
-          setLogs(logs + JSON.stringify(data) + "<br>");
+          setLogs(logs + "data parsed\n");
+          setLogs(logs + "\n" + JSON.stringify(data) + "\n");
           if (data.ok) {
             tg.sendData(JSON.stringify(data));
             return;
