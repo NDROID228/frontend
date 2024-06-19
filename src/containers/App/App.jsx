@@ -14,39 +14,54 @@ function App() {
       text: "Задати питання",
     });
     tg.MainButton.hide();
+    window.sendData = async () => {
+      const formData = new FormData();
+      formData.append("image", image);
+      await fetch(`${serverUrl}upload`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data; boundary=jbasdjbfj"
+        }
+      }).then((response) => {
+        setLogs(logs + "fetch worked<br>");
+        console.log(response.json());
+        return;
+      }).catch(e => console.log(e));
+    };
+    console.log("user", user);
   }, []);
 
   const onMainBtnClick = useCallback(async () => {
-    setLogs(logs + "button pressed\n");
-    const reader = new FileReader();
-    reader.readAsDataURL(imageFile);
-    reader.onloadend = () => {
-      setLogs(logs + '\nfetching loaded data:\n' + reader.result);
-      fetch(`${serverUrl}upload`, {
-        method: "POST",
-        body: reader.result,
+    setLogs(logs + "button pressed<br>");
+
+    const formData = new FormData();
+    formData.append("image", image);
+    let message = "";
+    await fetch(`${serverUrl}upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        setLogs(logs + "fetch worked<br>");
+        return response.json();
       })
-        .then((response) => {
-          setLogs(logs + "fetch worked\n");
-          return response.json();
-        })
-        .then((data) => {
-          setLogs(logs + "data parsed\n");
-          setLogs(logs + "\n" + JSON.stringify(data) + "\n");
-          if (data.ok) {
-            tg.sendData(JSON.stringify(data));
-            return;
-          } else {
-            setInputMsg(data.message);
-            return;
-          }
-        })
-        .catch((error) => {
-          setLogs(logs + "error caught " + error);
-          setInputMsg("Щось пішло не так... Спробуйте ще.");
+      .then((data) => {
+        setLogs(logs + "data parsed<br>");
+        setLogs(logs + JSON.stringify(data) + "<br>");
+        if (data.ok) {
+          tg.sendData(JSON.stringify(data));
           return;
-        });
-    };
+        } else {
+          setInputMsg(data.message);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLogs(logs + "error caught " + error);
+        setInputMsg("Щось пішло не так... Спробуйте ще.");
+        return;
+      });
 
     return;
   }, [image]);
@@ -62,7 +77,6 @@ function App() {
     if (image === "default") {
       setInputMsg("Тільки формати png та jpeg");
       tg.MainButton.hide();
-      return;
     } else if (!image) {
       setInputMsg("Помилка при завантаженні файлу :(");
       tg.MainButton.hide();
