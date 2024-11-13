@@ -38,6 +38,7 @@ function App() {
     const formData = new FormData();
     formData.append("image", image);
     formData.append("queryId", queryId);
+    setLogs(logs + "queryId: " + queryId)
     let message = "";
     await fetch(`${serverUrl}upload`, {
       method: "POST",
