@@ -50,7 +50,7 @@ function App() {
       })
       .then((data) => {
         setLogs(logs + "data parsed<br>");
-        setLogs(logs + JSON.stringify(data) + "<br>");
+        // setLogs(logs + JSON.stringify(data) + "<br>");
         if (data.ok) {
           onClose()
           return;
